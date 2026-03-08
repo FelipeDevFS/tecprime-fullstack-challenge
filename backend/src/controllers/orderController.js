@@ -15,6 +15,18 @@ async function createOrder(req, res) {
     
     console.error("Error creating order:", error.message)
 
+    if (
+      error.message === 'Missing required order fields' ||
+      error.message === 'Invalid payment method' ||
+      error.message === 'Products list is required' ||
+      error.message === 'Invalid product item' ||
+      error.message.includes('not found')
+    ) {
+      return res.status(400).json({
+        message: error.message
+      })
+    }
+
     return res.status(500).json({
       message: "Failed to create order"
     })
