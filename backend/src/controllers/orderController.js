@@ -41,9 +41,16 @@ async function getOrderById(req, res) {
 
     const order = await orderService.getOrderById(id)
     return res.status(200).json(order)
+    
   } catch (error) {
 
     console.error('Failed to fetch order:', error.message)
+
+    if(error.message === 'Order not found') {
+      return res.status(404).json({
+        message: error.message
+      })
+    }
     
     return res.status(500).json({ 
         message: 'Failed to fetch order' 

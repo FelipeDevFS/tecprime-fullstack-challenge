@@ -83,7 +83,43 @@ async function createOrder(orderData) {
 }
 
 async function getOrderById(id) {
-  return null
+  const orderResult = await pool.query(
+    `
+    SELECT id, nome, email, endereco, forma_pagamento, created_at
+    FROM orders
+    WHERE id = $1
+    `,
+    [id]
+  )
+
+  if (orderResult.rows.length === 0) {
+    throw new Error('Order not found')
+  }
+
+  const order = orderResult.rows[0]
+
+  const itemsResult = await pool.query(
+    `
+    SELECT product_id, quantity, price
+    FROM order_items
+    WHERE order_id = $1
+    `,
+    [id]
+  )
+
+  return {
+    id: order.id,
+    nome: order.nome,
+    email: order.email,
+    endereco: order.endereco,
+    formaPagamento: order.forma_pagamento,
+    createdAt: order.created_at,
+    produtos: itemsResult.rows.map((item) => ({
+      id: item.product_id,
+      quantidade: item.quantity,
+      preco: item.price
+    }))
+  }
 }
 
 module.exports = {
