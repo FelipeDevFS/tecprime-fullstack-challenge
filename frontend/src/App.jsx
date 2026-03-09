@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import api from './services/api'
 import ProductCard from './components/ProductCard'
 import Cart from './components/Cart'
+import CheckoutForm from './components/CheckoutForm'
+import OrderSuccess from './components/OrderSuccess'
 import './index.css'
 
 function App() {
@@ -9,6 +11,8 @@ function App() {
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [orderId, setOrderId] = useState(null)
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
 
   useEffect(() => {
     async function fetchProducts() {
@@ -48,6 +52,29 @@ function App() {
     )
   }
 
+  function handleCheckoutOpen() {
+    setCheckoutOpen(true)
+  }
+
+  function handleOrderSuccess(id) {
+    setOrderId(id)
+    setCartItems([])
+    setCheckoutOpen(false)
+  }
+
+  function handleBackToShop() {
+  setOrderId(null)
+}
+
+  if (orderId) {
+  return (
+    <OrderSuccess
+      orderId={orderId}
+      onBackToShop={handleBackToShop}
+    />
+  )
+}
+
   return (
     <div className="app">
       <header className="app-header">
@@ -73,10 +100,20 @@ function App() {
           </div>
         </main>
 
-        <Cart
-          cartItems={cartItems}
-          onRemoveFromCart={handleRemoveFromCart}
-        />
+        <div className="sidebar">
+          <Cart
+            cartItems={cartItems}
+            onRemoveFromCart={handleRemoveFromCart}
+            onCheckout={handleCheckoutOpen}
+          />
+
+          {checkoutOpen && (
+            <CheckoutForm
+              cartItems={cartItems}
+              onOrderSuccess={handleOrderSuccess}
+            />
+          )}
+        </div>
       </div>
     </div>
   )

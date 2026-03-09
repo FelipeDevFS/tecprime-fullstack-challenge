@@ -1,4 +1,4 @@
-function Cart({ cartItems, onRemoveFromCart }) {
+function Cart({ cartItems, onRemoveFromCart, onCheckout }) {
   const total = cartItems.reduce((acc, item) => {
     return acc + Number(item.preco) * item.quantidade
   }, 0)
@@ -41,6 +41,10 @@ function Cart({ cartItems, onRemoveFromCart }) {
               })}
             </strong>
           </div>
+
+          <button className="checkout-button" onClick={onCheckout}>
+            Finalizar compra
+          </button>
         </>
       )}
     </aside>
