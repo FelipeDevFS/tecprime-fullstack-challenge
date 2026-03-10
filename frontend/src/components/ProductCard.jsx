@@ -9,19 +9,24 @@ function ProductCard({ product, onAddToCart }) {
         <h2>{product.nome}</h2>
         <p>{product.descricao}</p>
 
-        <div className="product-details">
-          <span>
-            {Number(product.preco).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-            })}
-          </span>
-          <span>Estoque: {product.estoque}</span>
-        </div>
+        <div className="product-footer">
+          <div className="product-details">
+            <span>
+              {Number(product.preco).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+              })}
+            </span>
+            <span>Estoque: {product.estoque}</span>
+          </div>
 
-        <button onClick={() => onAddToCart(product)}>
-          Adicionar ao carrinho
-        </button>
+          <button
+            className="add-cart-button"
+            onClick={() => onAddToCart(product)}
+          >
+            Adicionar ao carrinho
+          </button>
+        </div>
       </div>
     </div>
   )

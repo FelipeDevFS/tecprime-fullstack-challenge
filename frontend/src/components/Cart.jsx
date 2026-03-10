@@ -1,22 +1,35 @@
-function Cart({ cartItems, onRemoveFromCart, onCheckout }) {
+function Cart({
+  cartItems,
+  onRemoveFromCart,
+  onIncreaseQuantity,
+  onDecreaseQuantity,
+  onCheckout
+}) {
   const total = cartItems.reduce((acc, item) => {
     return acc + Number(item.preco) * item.quantidade
   }, 0)
 
   return (
-    <aside className="cart">
-      <h2>Carrinho</h2>
+    <section className="side-card">
+      <div className="side-card-header">
+        <div>
+          <p className="section-kicker">Resumo</p>
+          <h2>Carrinho</h2>
+        </div>
+      </div>
 
       {cartItems.length === 0 ? (
-        <p>Seu carrinho está vazio.</p>
+        <div className="empty-state">
+          <p>Seu carrinho está vazio.</p>
+          <span>Adicione produtos para continuar a compra.</span>
+        </div>
       ) : (
         <>
           <div className="cart-items">
             {cartItems.map((item) => (
               <div key={item.id} className="cart-item">
-                <div>
+                <div className="cart-item-main">
                   <h3>{item.nome}</h3>
-                  <p>Qtd: {item.quantidade}</p>
                   <p>
                     {Number(item.preco).toLocaleString('pt-BR', {
                       style: 'currency',
@@ -25,29 +38,55 @@ function Cart({ cartItems, onRemoveFromCart, onCheckout }) {
                   </p>
                 </div>
 
-                <button onClick={() => onRemoveFromCart(item.id)}>
-                  Remover
-                </button>
+                <div className="cart-item-actions">
+                  <div className="quantity-control">
+                    <button
+                      type="button"
+                      onClick={() => onDecreaseQuantity(item.id)}
+                    >
+                      -
+                    </button>
+
+                    <span>{item.quantidade}</span>
+
+                    <button
+                      type="button"
+                      onClick={() => onIncreaseQuantity(item.id)}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="link-danger"
+                    onClick={() => onRemoveFromCart(item.id)}
+                  >
+                    Remover
+                  </button>
+                </div>
               </div>
             ))}
           </div>
 
-          <div className="cart-total">
-            <strong>
-              Total:{' '}
-              {total.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-              })}
-            </strong>
+          <div className="summary-box">
+            <div className="summary-row">
+              <span>Total</span>
+              <strong>
+                {total.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL'
+                })}
+              </strong>
+            </div>
           </div>
 
-          <button className="checkout-button" onClick={onCheckout}>
-            Finalizar compra
+          <button className="primary-button" onClick={onCheckout}>
+            Ir para checkout
           </button>
         </>
       )}
-    </aside>
+    </section>
   )
 }
 

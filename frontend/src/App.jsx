@@ -52,8 +52,39 @@ function App() {
     )
   }
 
+  function handleIncreaseQuantity(productId) {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === productId
+          ? { ...item, quantidade: item.quantidade + 1 }
+          : item
+      )
+    )
+  }
+
+  function handleDecreaseQuantity(productId) {
+    setCartItems((prevItems) =>
+      prevItems
+        .map((item) =>
+          item.id === productId
+            ? { ...item, quantidade: item.quantidade - 1 }
+            : item
+        )
+        .filter((item) => item.quantidade > 0)
+    )
+  }
+
   function handleCheckoutOpen() {
+    if (cartItems.length === 0) {
+      alert('Carrinho vazio')
+      return
+    }
+
     setCheckoutOpen(true)
+  }
+
+  function handleBackToCart() {
+    setCheckoutOpen(false)
   }
 
   function handleOrderSuccess(id) {
@@ -63,57 +94,72 @@ function App() {
   }
 
   function handleBackToShop() {
-  setOrderId(null)
-}
+    setOrderId(null)
+  }
 
   if (orderId) {
-  return (
-    <OrderSuccess
-      orderId={orderId}
-      onBackToShop={handleBackToShop}
-    />
-  )
-}
+    return (
+      <OrderSuccess
+        orderId={orderId}
+        onBackToShop={handleBackToShop}
+      />
+    )
+  }
 
   return (
-    <div className="app">
-      <header className="app-header">
+    <div className="app-shell">
+      <header className="topbar">
         <div>
-          <h1>Mini Shop Tecprime</h1>
-          <p>Listagem de produtos integrada com API externa</p>
+          <p className="eyebrow">Tecprime Challenge</p>
+          <h1>Mini Shop</h1>
+          <p className="subtitle">
+            Catálogo, carrinho em memória e checkout integrado ao backend.
+          </p>
+        </div>
+
+        <div className="topbar-badge">
+          {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} no carrinho
         </div>
       </header>
 
       <div className="layout">
-        <main className="products-section">
-          {loading && <p>Carregando produtos...</p>}
-          {error && <p>{error}</p>}
+        <main className="catalog-panel">
+          {loading && <p className="feedback">Carregando produtos...</p>}
+          {error && <p className="feedback feedback-error">{error}</p>}
 
-          <div className="products-grid">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
+          {!loading && !error && (
+            <div className="products-grid">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
+          )}
         </main>
 
-        <div className="sidebar">
-          <Cart
-            cartItems={cartItems}
-            onRemoveFromCart={handleRemoveFromCart}
-            onCheckout={handleCheckoutOpen}
-          />
-
-          {checkoutOpen && (
+        <aside className="sidebar">
+          {!checkoutOpen ? (
+            <Cart
+              cartItems={cartItems}
+              onRemoveFromCart={handleRemoveFromCart}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDecreaseQuantity={handleDecreaseQuantity}
+              onCheckout={handleCheckoutOpen}
+            />
+          ) : (
             <CheckoutForm
               cartItems={cartItems}
+              onBackToCart={handleBackToCart}
+              onRemoveFromCart={handleRemoveFromCart}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDecreaseQuantity={handleDecreaseQuantity}
               onOrderSuccess={handleOrderSuccess}
             />
           )}
-        </div>
+        </aside>
       </div>
     </div>
   )

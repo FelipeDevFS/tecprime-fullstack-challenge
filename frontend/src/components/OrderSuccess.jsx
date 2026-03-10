@@ -1,17 +1,19 @@
 function OrderSuccess({ orderId, onBackToShop }) {
   return (
-    <div className="order-success">
-      <h2>Pedido realizado com sucesso 🎉</h2>
+    <div className="success-shell">
+      <div className="success-card">
+        <p className="section-kicker">Pedido concluído</p>
+        <h2>Compra realizada com sucesso</h2>
+        <p className="success-text">Seu número de pedido é</p>
+        <strong>#{orderId}</strong>
+        <p className="success-text">
+          Guarde esse identificador para consultar o pedido pelo endpoint do backend.
+        </p>
 
-      <p>Seu número de pedido é:</p>
-
-      <strong>#{orderId}</strong>
-
-      <p>Guarde este número para consultar seu pedido.</p>
-
-      <button className="back-button" onClick={onBackToShop}>
-        Voltar para a loja
-      </button>
+        <button className="primary-button" onClick={onBackToShop}>
+          Voltar para a loja
+        </button>
+      </div>
     </div>
   )
 }
